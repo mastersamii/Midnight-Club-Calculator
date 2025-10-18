@@ -100,6 +100,16 @@
   .discount{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center}
   .discount input[type="range"]{width:100%}
   .kbd{font:800 .85rem ui-monospace,Menlo,Consolas; background:transparent; border:2px solid var(--purple); color:var(--purple); border-radius:8px; padding:4px 8px}
+
+  /* Modal polish */
+  dialog{
+    width:min(520px,92vw); border:1px solid var(--border); background:var(--panel); color:var(--ink);
+    border-radius:16px; padding:0; box-shadow:0 30px 60px rgba(0,0,0,.55);
+  }
+  dialog::backdrop{background:linear-gradient(180deg, rgba(139,92,246,.25), rgba(251,55,183,.18));}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(90deg,transparent,#8b5cf620,transparent)}
+  .modal-body{padding:14px;display:grid;gap:10px}
+  .modal-body input{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -222,11 +232,11 @@
 
   <!-- Price Prompt -->
   <dialog id="priceModal">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)">
+    <div class="modal-head">
       <strong id="pmTitle">Enter Price</strong>
       <button class="btn" id="pmClose">✕</button>
     </div>
-    <div style="padding:14px;display:grid;gap:10px">
+    <div class="modal-body">
       <label for="pmInput">Unit Price ($)</label>
       <input id="pmInput" type="number" min="0" step="25" value="0"/>
       <div class="toolrow" style="justify-content:flex-end">
@@ -237,79 +247,102 @@
   </dialog>
 
 <script>
-/* ====== DATA (with emojis) ====== */
+/* ====== DATA (UPDATED per your spec) ====== */
 const MENU = {
   parts: [
-    { id:'spoiler',        name:'🧩 Spoiler',            price:null, type:'part' },
-    { id:'skirts',         name:'🧩 Skirts',             price:null, type:'part' },
-    { id:'exhausts',       name:'💨 Exhausts',           price:null, type:'part' },
-    { id:'hood',           name:'🛡️ Hood',               price:null, type:'part' },
-    { id:'bodykits',       name:'🧱 Body Kits',          price:null, type:'part' },
-    { id:'roof',           name:'🏁 Roof',               price:null, type:'part' },
-    { id:'fenders',        name:'🧩 Fenders',            price:null, type:'part' },
-    { id:'framekits',      name:'🧬 Frame Kits',         price:null, type:'part' },
-    { id:'plates',         name:'🔖 Plates (+Vanity)',   price:null, type:'part' },
-    { id:'liveries',       name:'🎨 Liveries',           price:null, type:'part' },
-    { id:'front-bumper',   name:'🧩 Front Bumper',       price:null, type:'part' },
-    { id:'rear-bumper',    name:'🧩 Rear Bumper',        price:null, type:'part' },
-    { id:'lights',         name:'💡 Lights',             price:null, type:'part' },
-    { id:'lights-color',   name:'🌈 Lights Color',       price:null, type:'part' },
-    { id:'neon-layout',    name:'✨ Neon Layout',        price:null, type:'part' },
-    { id:'neon-color',     name:'💜 Neon Color',         price:null, type:'part' },
-    { id:'primary-paint',  name:'🎨 Primary Respray',    price:null, type:'part' },
-    { id:'secondary-paint',name:'🎨 Secondary Respray',  price:null, type:'part' },
-    { id:'systems',        name:'🧠 Systems',            price:null, type:'part' },
-    { id:'windows',        name:'🧊 Windows',            price:null, type:'part' },
-    { id:'wheel-color',    name:'🎡 Wheel Color',        price:null, type:'part' },
-    { id:'wheel-accessory',name:'🔩 Wheel Accessory',    price:null, type:'part' }
+    { id:'spoiler',         name:'🧩 Spoiler',              price:null, type:'part' },
+    { id:'skirts',          name:'🧩 Skirts',               price:null, type:'part' },
+    { id:'exhausts',        name:'💨 Exhausts',             price:null, type:'part' },
+    { id:'hood',            name:'🛡️ Hood',                 price:null, type:'part' },
+    { id:'bodykits',        name:'🧱 Body Kits',            price:null, type:'part' },
+    { id:'roof',            name:'🏁 Roof',                 price:null, type:'part' },
+
+    /* Fenders -> Grill */
+    { id:'grill',           name:'🧩 Grill',                price:null, type:'part' },
+
+    { id:'framekits',       name:'🧬 Frame Kits',           price:null, type:'part' },
+
+    /* Plates (+Vanity) -> Plate */
+    { id:'plate',           name:'🔖 Plate',                price:null, type:'part' },
+
+    { id:'liveries',        name:'🎨 Liveries',             price:null, type:'part' },
+    { id:'front-bumper',    name:'🧩 Front Bumper',         price:null, type:'part' },
+    { id:'rear-bumper',     name:'🧩 Rear Bumper',          price:null, type:'part' },
+    { id:'lights',          name:'💡 Lights',               price:null, type:'part' },
+    { id:'lights-color',    name:'🌈 Lights Color',         price:null, type:'part' },
+    { id:'neon-layout',     name:'✨ Neon Layout',          price:null, type:'part' },
+    { id:'neon-color',      name:'💜 Neon Color',           price:null, type:'part' },
+    { id:'primary-paint',   name:'🎨 Primary Respray',      price:null, type:'part' },
+    { id:'secondary-paint', name:'🎨 Secondary Respray',    price:null, type:'part' },
+
+    /* NEW right after secondary respray */
+    { id:'pearlescent',     name:'🌌 Pearlescent',          price:null, type:'part' },
+
+    { id:'systems',         name:'🧠 Systems',              price:null, type:'part' },
+    { id:'windows',         name:'🧊 Windows',              price:null, type:'part' },
+    { id:'wheel-color',     name:'🎡 Wheel Color',          price:null, type:'part' },
+    { id:'wheel-accessory', name:'🔩 Wheel Accessory',      price:null, type:'part' }
   ],
+
   cosmetics: [
-    { id:'arch-cover',   name:'🧭 Arch Cover',  price:null, type:'cos' },
-    { id:'aerials',      name:'📡 Aerials',     price:null, type:'cos' },
-    { id:'roof-scoops',  name:'🧩 Roof Scoops', price:null, type:'cos' },
-    { id:'roll-cage',    name:'🦺 Roll Cage',   price:null, type:'cos' },
-    { id:'interior',     name:'🛋️ Interior Color', price:null, type:'cos' },
-    { id:'trim',         name:'🧵 Trim Design', price:null, type:'cos' },
-    { id:'dashboard',    name:'📟 Dashboard',   price:null, type:'cos' },
-    { id:'doors',        name:'🚪 Doors',       price:null, type:'cos' },
-    { id:'seats',        name:'🪑 Seats',       price:null, type:'cos' },
-    { id:'steering',     name:'🕹️ Steering Wheel', price:null, type:'cos' },
-    { id:'engine-block', name:'🧊 Engine Block', price:null, type:'cos' },
-    { id:'cam-cover',    name:'🎛️ Cam Cover',   price:null, type:'cos' },
-    { id:'strut-brace',  name:'🦾 Strut Brace', price:null, type:'cos' }
+    { id:'arch-cover',   name:'🧭 Arch Cover',        price:null, type:'cos' },
+    { id:'aerials',      name:'📡 Aerials',           price:null, type:'cos' },
+    { id:'roof-scoops',  name:'🧩 Roof Scoops',       price:null, type:'cos' },
+    { id:'roll-cage',    name:'🦺 Roll Cage',         price:null, type:'cos' },
+    { id:'interior',     name:'🛋️ Interior Color',   price:null, type:'cos' },
+    { id:'trim',         name:'🧵 Trim Design',       price:null, type:'cos' },
+    { id:'dashboard',    name:'📟 Dashboard',         price:null, type:'cos' },
+    { id:'doors',        name:'🚪 Doors',             price:null, type:'cos' },
+    { id:'seats',        name:'🪑 Seats',             price:null, type:'cos' },
+    { id:'steering',     name:'🕹️ Steering Wheel',   price:null, type:'cos' },
+    { id:'engine-block', name:'🧊 Engine Block',      price:null, type:'cos' },
+    { id:'cam-cover',    name:'🎛️ Cam Cover',         price:null, type:'cos' },
+    { id:'strut-brace',  name:'🦾 Strut Brace',       price:null, type:'cos' }
   ],
+
   performance: {
+    /* Brakes */
     brakes: [
-      { id:'brk-street', name:'🛑 Brakes: Street',    price:1900, type:'perf' },
-      { id:'brk-sport',  name:'🏎️ Brakes: Sport',     price:2850, type:'perf' },
-      { id:'brk-race',   name:'🏁 Brakes: Race',      price:3800, type:'perf' }
+      { id:'brk-street', name:'🛑 Brakes: Street', price:1800, type:'perf' },
+      { id:'brk-sport',  name:'🏎️ Brakes: Sport',  price:2700, type:'perf' },
+      { id:'brk-race',   name:'🏁 Brakes: Race',   price:3600, type:'perf' }
     ],
+
+    /* Suspension */
     suspension: [
-      { id:'sus-lowered', name:'⬇️ Suspension: Lowered',     price:950,  type:'perf' },
-      { id:'sus-street',  name:'🚧 Suspension: Street',       price:1900, type:'perf' },
-      { id:'sus-sport',   name:'🏎️ Suspension: Sport',        price:2375, type:'perf' },
-      { id:'sus-comp',    name:'🎯 Suspension: Competition',  price:3800, type:'perf' }
+      { id:'sus-lowered', name:'⬇️ Suspension: Lowered',    price:900,  type:'perf' },
+      { id:'sus-street',  name:'🚧 Suspension: Street',     price:1800, type:'perf' },
+      { id:'sus-sport',   name:'🏎️ Suspension: Sport',      price:3150, type:'perf' },
+      { id:'sus-comp',    name:'🎯 Suspension: Competition', price:3600, type:'perf' }
     ],
+
+    /* Transmission */
     transmission: [
-      { id:'trn-street', name:'⚙️ Transmission: Street', price:950,  type:'perf' },
-      { id:'trn-sport',  name:'⚙️ Transmission: Sport',  price:1188, type:'perf' },
-      { id:'trn-race',   name:'⚙️ Transmission: Race',   price:1425, type:'perf' }
+      { id:'trn-street', name:'⚙️ Transmission: Street', price:900,  type:'perf' },
+      { id:'trn-sport',  name:'⚙️ Transmission: Sport',  price:1125, type:'perf' },
+      { id:'trn-race',   name:'⚙️ Transmission: Race',   price:1350, type:'perf' }
     ],
+
+    /* Armor */
     armor: [
-      { id:'arm-20',  name:'🛡️ Armor 20%',  price:950,  type:'perf' },
-      { id:'arm-40',  name:'🛡️ Armor 40%',  price:2850, type:'perf' },
-      { id:'arm-60',  name:'🛡️ Armor 60%',  price:3800, type:'perf' },
-      { id:'arm-80',  name:'🛡️ Armor 80%',  price:4750, type:'perf' },
-      { id:'arm-100', name:'🛡️ Armor 100%', price:7125, type:'perf' }
+      { id:'arm-20',  name:'🛡️ Armor 20%',  price:900,  type:'perf' },
+      { id:'arm-40',  name:'🛡️ Armor 40%',  price:2700, type:'perf' },
+      { id:'arm-60',  name:'🛡️ Armor 60%',  price:3600, type:'perf' },
+      { id:'arm-80',  name:'🛡️ Armor 80%',  price:4500, type:'perf' },
+      { id:'arm-100', name:'🛡️ Armor 100%', price:6750, type:'perf' }
     ],
+
+    /* Turbo */
     turbo: [
-      { id:'turbo', name:'🌬️ Turbo Tuning', price:5700, type:'perf' }
+      { id:'turbo', name:'🌬️ Turbo Tuning', price:5400, type:'perf' }
     ],
+
+    /* Engine */
     engine: [
-      { id:'ems-l2', name:'🔧 Engine (EMS L2)', price:2375, type:'perf' },
-      { id:'ems-l3', name:'🔧 Engine (EMS L3)', price:3325, type:'perf' },
-      { id:'ems-l4', name:'🔧 Engine (EMS L4)', price:4750, type:'perf' },
-      { id:'ems-l5', name:'🔧 Engine (EMS L5)', price:7600, type:'perf' }
+      { id:'ems-l2', name:'🔧 Engine (EMS L2)', price:2250, type:'perf' },
+      { id:'ems-l3', name:'🔧 Engine (EMS L3)', price:3150, type:'perf' },
+      { id:'ems-l4', name:'🔧 Engine (EMS L4)', price:4500, type:'perf' },
+      { id:'ems-l5', name:'🔧 Engine (EMS L5)', price:7200, type:'perf' }
     ]
   }
 };
@@ -343,7 +376,6 @@ function allItems(){
 function findById(id){ return allItems().find(i=>i.id===id); }
 
 function cardHTML(item){
-  // show cyan price only if set; otherwise show a small “custom” tag (no text like "enter price")
   const price = (item.price==null) ? '' : `<span class="price">${currency(item.price)}</span>`;
   const tag   = (item.price==null) ? `<span class="tag">custom</span>` : '';
   const act   = (item.price==null) ? `data-custom="${item.id}"` : `data-add="${item.id}"`;
