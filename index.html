@@ -442,7 +442,7 @@ document.getElementById('pmAdd').onclick=()=>{
 };
 function openPricePrompt(item, qty){
   pmCtx={...item, qty};
-  pmTitle.textContent=`Enter price — ${item.name}`;
+  pmTitle.textContent=`Enter price: ${item.name}`;
   pmInput.value='';
   pm.showModal();
 }
