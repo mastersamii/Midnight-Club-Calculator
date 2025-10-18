@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Midnight Club Pricing Calculator</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/5gsBM1sv/GW.png">
+<meta name="theme-color" content="#0b1220">
+<style>
+  :root{
+    --mid:#0b1220; --ink:#e7ecff; --muted:#9aa4c7;
+    --panel:#0f1830; --card:#121c3a; --chip:#0e1a35;
+    --border:#1f2b52; --border-strong:#2b3a69;
+    --accent:#4f6bff; --radius:16px; --shadow:0 10px 24px rgba(0,0,0,.25);
+    --light-ink:#1b2140; --light-bg:#f4f7ff; --light-panel:#ffffff;
+    --light-card:#ffffff; --light-border:#d7def3; --light-border-2:#c6d1f0;
+  }
+  [data-theme="light"]{
+    --mid:var(--light-bg); --panel:var(--light-panel); --card:var(--light-card);
+    --chip:#f5f8ff; --border:var(--light-border); --border-strong:var(--light-border-2);
+    --ink:#0f1730; --muted:#5a6a9a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--mid);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+  h1,h2,h3{letter-spacing:.2px}
+  .container{max-width:1200px;margin:28px auto;padding:0 16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:48px;height:48px;border-radius:12px;background:
+      radial-gradient(22px 12px at 14px 12px,#4f6bff55,transparent 60%),
+      linear-gradient(135deg,#5e7bff,#2435a8);
+      display:grid;place-items:center;box-shadow:var(--shadow)}
+  .logo span{font-weight:900}
+  .toolrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:12px;
+       background:var(--chip);color:inherit;border:1px solid var(--border);cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(135deg,#4f6bff,#2f49ff);color:#fff;border:none}
+  .btn.ghost{background:transparent}
+  .chip{padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);font-weight:700;color:var(--muted);font-size:.85rem}
+  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);position:relative}
+  .panel::after{content:"";position:absolute;inset:0;border-radius:calc(var(--radius) - 1px);box-shadow:inset 0 0 0 1px var(--border-strong);pointer-events:none}
+  .panel h2{margin:0;padding:14px 16px;font-size:1rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+  .panel .content{padding:14px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;position:relative}
+  .card::after{content:"";position:absolute;inset:0;border-radius:13px;pointer-events:none;box-shadow:inset 0 0 0 1px var(--border-strong)}
+  .price{color:var(--accent);font-weight:800}
+  .qty{display:grid;grid-template-columns:32px 1fr 32px;align-items:center;gap:8px}
+  .qty button{height:36px;border-radius:10px;border:1px solid var(--border);background:var(--chip);font-size:18px;cursor:pointer}
+  .qty output{text-align:center}
+  .muted{color:var(--muted);font-size:.9rem}
+  .order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px;position:relative}
+  .order-card::after{content:"";position:absolute;inset:0;border-radius:13px;pointer-events:none;box-shadow:inset 0 0 0 1px var(--border-strong)}
+  .cart-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px;border-bottom:1px dashed var(--border)}
+  .cart-item:last-child{border-bottom:none}
+  .summary{display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;justify-content:space-between;align-items:center}
+  .row.total{font-size:1.2rem;font-weight:900}
+  .divider{height:1px;background:var(--border);margin:12px 0}
+  .option-row{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card)}
+  select,input[type="number"]{background:var(--card);color:inherit;border:1px solid var(--border);border-radius:10px;padding:6px 8px}
+  dialog{width:min(520px,92vw);background:var(--panel);color:inherit;border:1px solid var(--border);border-radius:18px;padding:0;box-shadow:0 30px 50px rgba(0,0,0,.35)}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .modal-body{padding:14px;display:grid;gap:10px}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo"><span>MC</span></div>
+      <div>
+        <h1 style="margin:0">Midnight Club Pricing Calculator</h1>
+        <div class="muted">Tuning • Paint • Cosmetics — quick quotes with discounts.</div>
+      </div>
+    </div>
+    <div class="toolrow">
+      <span class="chip">Autosaves</span>
+      <button class="btn ghost" id="themeBtn">☀️ Light</button>
+      <button class="btn ghost" id="resetBtn">Clear</button>
+      <button class="btn primary" id="checkoutBtn">Checkout</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT -->
+    <section class="panel">
+      <h2>Menu</h2>
+      <div class="content">
+        <h3 style="margin:0 0 6px">Parts & Body (per-vehicle pricing)</h3>
+        <div class="cards" id="parts"></div>
+
+        <div class="divider"></div>
+
+        <h3 style="margin:0 0 6px">Cosmetic Upgrades (manual)</h3>
+        <div class="cards" id="cosmetics"></div>
+
+        <div class="divider"></div>
+
+        <h3 style="margin:0 0 6px">Performance Upgrades</h3>
+        <div class="cards" id="perf-brakes"></div>
+        <div class="cards" id="perf-trans"></div>
+        <div class="cards" id="perf-susp"></div>
+        <div class="cards" id="perf-armor"></div>
+        <div class="cards" id="perf-turbo"></div>
+        <div class="cards" id="perf-engine"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="panel">
+      <h2>Order / Totals</h2>
+      <div class="content">
+        <div class="option-row">
+          <label><strong>Customer Type</strong></label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="custType">
+              <option value="Customer">Customer (0%)</option>
+              <option value="PD/EMS">PD/EMS (30%)</option>
+              <option value="Event">Event (30%)</option>
+              <option value="Custom">Custom…</option>
+            </select>
+            <input id="customPct" type="number" min="0" max="100" step="5" value="0" style="width:96px" title="Custom discount %" />
+          </div>
+        </div>
+
+        <div id="cart" class="order-card" style="margin-top:10px">
+          <div class="cart-item muted">Cart is empty. Add items to begin.</div>
+        </div>
+
+        <div class="summary" style="margin-top:10px">
+          <div class="row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div>
+          <div class="row"><span>Discount (<span id="discLabel">0%</span>)</span><strong id="discount">-$0.00</strong></div>
+          <div class="row total"><span>Total</span><strong id="total">$0.00</strong></div>
+        </div>
+
+        <div class="divider"></div>
+        <h3 style="margin:0 0 6px">History</h3>
+        <div id="historyList" class="summary" style="gap:12px"></div>
+        <div class="toolrow" style="justify-content:flex-end;margin-top:6px">
+          <button class="btn ghost" id="clearHistoryBtn">Clear History</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Price prompt for custom-priced items -->
+<dialog id="priceModal">
+  <div class="modal-header">
+    <strong id="pmTitle">Enter Price</strong>
+    <button class="btn" id="pmClose">✕</button>
+  </div>
+  <div class="modal-body">
+    <label>Unit Price ($)</label>
+    <input id="pmInput" type="number" min="0" step="50" value="0"/>
+    <div class="toolrow" style="justify-content:flex-end">
+      <button class="btn" id="pmCancel">Cancel</button>
+      <button class="btn primary" id="pmAdd">Add</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* =========================
+   CONFIG
+========================= */
+const MENU = {
+  parts: [
+    // price:null => prompt employee for price per vehicle
+    { id:'spoiler', name:'Spoiler', price:null, type:'part' },
+    { id:'skirts', name:'Skirts', price:null, type:'part' },
+    { id:'exhausts', name:'Exhausts', price:null, type:'part' },
+    { id:'hood', name:'Hood', price:null, type:'part' },
+    { id:'bodykits', name:'Body Kits', price:null, type:'part' },
+    { id:'roof', name:'Roof', price:null, type:'part' },
+    { id:'fenders', name:'Fenders', price:null, type:'part' },
+    { id:'framekits', name:'Frame Kits', price:null, type:'part' },
+    { id:'plates', name:'Plates (+Vanity)', price:null, type:'part' },
+    { id:'liveries', name:'Liveries', price:null, type:'part' },
+    { id:'front-bumper', name:'Front Bumper', price:null, type:'part' },
+    { id:'rear-bumper', name:'Rear Bumper', price:null, type:'part' },
+    { id:'lights', name:'Lights', price:null, type:'part' },
+    { id:'lights-color', name:'Lights Color', price:null, type:'part' },
+    { id:'neon-layout', name:'Neon Layout', price:null, type:'part' },
+    { id:'neon-color', name:'Neon Color', price:null, type:'part' },
+    { id:'primary-paint', name:'Primary Respray', price:null, type:'part' },
+    { id:'secondary-paint', name:'Secondary Respray', price:null, type:'part' },
+    { id:'systems', name:'Systems', price:null, type:'part' },
+    { id:'windows', name:'Windows', price:null, type:'part' },
+    { id:'wheel-color', name:'Wheel Color', price:null, type:'part' },
+    { id:'wheel-accessory', name:'Wheel Accessory', price:null, type:'part' }
+  ],
+  cosmetics: [
+    { id:'arch-cover', name:'Arch Cover', price:null, type:'cos' },
+    { id:'aerials', name:'Aerials', price:null, type:'cos' },
+    { id:'roof-scoops', name:'Roof Scoops', price:null, type:'cos' },
+    { id:'roll-cage', name:'Roll Cage', price:null, type:'cos' },
+    { id:'interior-color', name:'Interior Color', price:null, type:'cos' },
+    { id:'trim-design', name:'Trim Design', price:null, type:'cos' },
+    { id:'dashboard', name:'Dashboard', price:null, type:'cos' },
+    { id:'doors', name:'Doors', price:null, type:'cos' },
+    { id:'seats', name:'Seats', price:null, type:'cos' },
+    { id:'steering', name:'Steering Wheel', price:null, type:'cos' },
+    { id:'engine-block', name:'Engine Block', price:null, type:'cos' },
+    { id:'cam-cover', name:'Cam Cover', price:null, type:'cos' },
+    { id:'strut-brace', name:'Strut Brace', price:null, type:'cos' },
+    { id:'extra-1', name:'Extra 1', price:null, type:'cos' },
+    { id:'extra-2', name:'Extra 2', price:null, type:'cos' }
+  ],
+  performance: {
+    brakes: [
+      { id:'brk-street', name:'Brakes — Street',    price:1900 },
+      { id:'brk-sport',  name:'Brakes — Sport',     price:2850 },
+      { id:'brk-race',   name:'Brakes — Race',      price:3800 }
+    ],
+    transmission: [
+      { id:'trn-street', name:'Transmission — Street', price:950 },
+      { id:'trn-sport',  name:'Transmission — Sport',  price:1188 },
+      { id:'trn-race',   name:'Transmission — Race',   price:1425 }
+    ],
+    suspension: [
+      { id:'sus-lowered', name:'Suspension — Lowered',     price:950 },
+      { id:'sus-street',  name:'Suspension — Street',      price:1900 },
+      { id:'sus-sport',   name:'Suspension — Sport',       price:2375 },
+      { id:'sus-comp',    name:'Suspension — Competition', price:3800 }
+    ],
+    armor: [
+      { id:'arm-20',  name:'Armor — 20%',  price:950 },
+      { id:'arm-40',  name:'Armor — 40%',  price:2850 },
+      { id:'arm-60',  name:'Armor — 60%',  price:3800 },
+      { id:'arm-80',  name:'Armor — 80%',  price:4750 },
+      { id:'arm-100', name:'Armor — 100%', price:7125 }
+    ],
+    turbo: [
+      { id:'turbo', name:'Turbo Tuning', price:5700 }
+    ],
+    engine: [
+      { id:'ems-l2', name:'Engine (EMS L2)', price:2375 },
+      { id:'ems-l3', name:'Engine (EMS L3)', price:3325 },
+      { id:'ems-l4', name:'Engine (EMS L4)', price:4750 },
+      { id:'ems-l5', name:'Engine (EMS L5)', price:7600 }
+    ]
+  }
+};
+
+// default discounts (editable)
+const DISCOUNTS = { "Customer":0, "PD/EMS":30, "Event":30, "Custom":0 };
+
+/* =========================
+   UTIL / STATE
+========================= */
+const currency = n => '$'+Number(n).toFixed(2);
+const STATE_KEY='midnight_calc_v1', HIST_KEY='midnight_hist_v1';
+const state = { cart:[], custType:'Customer', customPct:0, history:[] };
+try{
+  const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
+  const hist =JSON.parse(localStorage.getItem(HIST_KEY)||'[]');
+  if(saved.cart) state.cart=saved.cart;
+  if(saved.custType) state.custType=saved.custType;
+  if(typeof saved.customPct==='number') state.customPct=saved.customPct;
+  if(Array.isArray(hist)) state.history=hist;
+}catch{}
+const persist = ()=>localStorage.setItem(STATE_KEY,JSON.stringify(state));
+const persistHistory=()=>localStorage.setItem(HIST_KEY,JSON.stringify(state.history));
+
+/* =========================
+   RENDER CARDS
+========================= */
+function cardHTML(item){
+  const needsPrice = (item.price==null);
+  const label = needsPrice ? '<span class="muted">enter price</span>' : `<span class="price">${currency(item.price)}</span>`;
+  return `
+  <article class="card">
+    <h3 style="margin:0">${item.name}</h3>
+    <div class="toolrow" style="justify-content:space-between">
+      ${label}
+      <div class="qty">
+        <button aria-label="dec">−</button>
+        <output>1</output>
+        <button aria-label="inc">+</button>
+      </div>
+    </div>
+    <button class="btn" ${needsPrice?`data-custom="${item.id}"`:`data-add="${item.id}"`}>Add</button>
+  </article>`;
+}
+
+function renderSection(list, mountId){
+  const el=document.getElementById(mountId);
+  el.innerHTML = list.map(cardHTML).join('');
+  el.querySelectorAll('.card').forEach(card=>{
+    let count=1; const out=card.querySelector('output');
+    card.querySelector('[aria-label="dec"]').addEventListener('click',()=>{ count=Math.max(1,count-1); out.value=count; });
+    card.querySelector('[aria-label="inc"]').addEventListener('click',()=>{ count++; out.value=count; });
+    const addBtn = card.querySelector('[data-add]');
+    const cusBtn = card.querySelector('[data-custom]');
+    if(addBtn){
+      const id=addBtn.getAttribute('data-add');
+      const item=findById(id);
+      addBtn.addEventListener('click',()=>addToCart({ id:item.id, name:item.name, unitPrice:item.price, qty:count, type:item.type }));
+    }
+    if(cusBtn){
+      const id=cusBtn.getAttribute('data-custom');
+      const item=findById(id);
+      cusBtn.addEventListener('click',()=>promptCustomPrice(item,count));
+    }
+  });
+}
+
+function renderCards(){
+  renderSection(MENU.parts,'parts');
+  renderSection(MENU.cosmetics,'cosmetics');
+  renderSection(MENU.performance.brakes,'perf-brakes');
+  renderSection(MENU.performance.transmission,'perf-trans');
+  renderSection(MENU.performance.suspension,'perf-susp');
+  renderSection(MENU.performance.armor,'perf-armor');
+  renderSection(MENU.performance.turbo,'perf-turbo');
+  renderSection(MENU.performance.engine,'perf-engine');
+}
+
+function findById(id){
+  return [
+    ...MENU.parts,
+    ...MENU.cosmetics,
+    ...MENU.performance.brakes,
+    ...MENU.performance.transmission,
+    ...MENU.performance.suspension,
+    ...MENU.performance.armor,
+    ...MENU.performance.turbo,
+    ...MENU.performance.engine
+  ].find(i=>i.id===id);
+}
+
+/* =========================
+   CUSTOM PRICE MODAL
+========================= */
+const pm=document.getElementById('priceModal');
+const pmTitle=document.getElementById('pmTitle');
+const pmInput=document.getElementById('pmInput');
+document.getElementById('pmClose').onclick=()=>pm.close();
+document.getElementById('pmCancel').onclick=()=>pm.close();
+let pmCtx=null;
+document.getElementById('pmAdd').onclick=()=>{
+  if(!pmCtx) return;
+  const v = Number(pmInput.value||0);
+  addToCart({ id:pmCtx.id, name:pmCtx.name, unitPrice:v, qty:pmCtx.qty||1, type:pmCtx.type, meta:'custom price' });
+  pm.close();
+};
+function promptCustomPrice(item, qty){
+  pmCtx={...item, qty};
+  pmTitle.textContent = `Enter price — ${item.name}`;
+  pmInput.value = '';
+  pm.showModal();
+}
+
+/* =========================
+   CART / TOTALS
+========================= */
+function addToCart(line){
+  const key = `${line.id}|${line.unitPrice}|${line.meta||''}`;
+  const match = state.cart.find(l => `${l.id}|${l.unitPrice}|${l.meta||''}`===key);
+  if(match) match.qty += line.qty; else state.cart.push(line);
+  persist(); renderCart(); renderTotals();
+}
+
+function renderCart(){
+  const wrap=document.getElementById('cart');
+  if(!state.cart.length){ wrap.innerHTML='<div class="cart-item muted">Cart is empty. Add items to begin.</div>'; return; }
+  wrap.innerHTML = state.cart.map((l,i)=>`
+    <div class="cart-item">
+      <div>
+        <div><strong>${l.name}</strong></div>
+        <div class="muted">${currency(l.unitPrice)} each${l.meta?` • ${l.meta}`:''}</div>
+      </div>
+      <div class="qty">
+        <button data-dec="${i}">−</button>
+        <output>${l.qty}</output>
+        <button data-inc="${i}">+</button>
+      </div>
+      <div><strong>${currency(l.unitPrice*l.qty)}</strong></div>
+    </div>`).join('');
+
+  wrap.querySelectorAll('[data-inc]').forEach(b=>b.addEventListener('click',()=>{ const i=+b.dataset.inc; state.cart[i].qty++; persist(); renderCart(); renderTotals(); }));
+  wrap.querySelectorAll('[data-dec]').forEach(b=>b.addEventListener('click',()=>{ const i=+b.dataset.dec; state.cart[i].qty--; if(state.cart[i].qty<=0) state.cart.splice(i,1); persist(); renderCart(); renderTotals(); }));
+}
+
+function currentDiscountPct(){
+  if(state.custType==='Custom') return Math.max(0,Math.min(100,Number(state.customPct)||0));
+  return DISCOUNTS[state.custType]||0;
+}
+
+function renderTotals(){
+  const subtotal = state.cart.reduce((s,l)=>s+l.unitPrice*l.qty,0);
+  const pct = currentDiscountPct();
+  const discVal = +(subtotal * (pct/100)).toFixed(2);
+  const total = subtotal - discVal;
+  document.getElementById('subtotal').textContent=currency(subtotal);
+  document.getElementById('discount').textContent='-'+currency(discVal);
+  document.getElementById('total').textContent=currency(total);
+  document.getElementById('discLabel').textContent = pct + '%';
+}
+
+const typeSel=document.getElementById('custType');
+const customPct=document.getElementById('customPct');
+function renderCust(){
+  typeSel.value=state.custType;
+  customPct.value = state.customPct;
+  customPct.disabled = state.custType!=='Custom';
+}
+typeSel.addEventListener('change',()=>{ state.custType=typeSel.value; persist(); renderCust(); renderTotals(); });
+customPct.addEventListener('input',()=>{ state.customPct=Number(customPct.value||0); persist(); renderTotals(); });
+
+/* =========================
+   HISTORY
+========================= */
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!state.history.length){ list.innerHTML='<div class="muted">No past orders.</div>'; return; }
+  list.innerHTML = state.history.map(h=>`
+    <article class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div><strong>${new Date(h.id).toLocaleString()}</strong><div class="muted">${h.items.length} lines • ${h.custType} (${h.pct}%)</div></div>
+        <div><strong>${currency(h.total)}</strong></div>
+      </div>
+      <details class="muted" style="margin-top:6px">
+        <summary>Lines</summary>
+        <ul style="margin:6px 0 0 16px">
+          ${h.items.map(i=>`<li>${i.qty}× ${i.name}${i.meta?` <span class="muted">(${i.meta})</span>`:''} — ${currency(i.unit*i.qty)}</li>`).join('')}
+        </ul>
+      </details>
+      <div class="toolrow" style="justify-content:flex-end">
+        <button class="btn" data-reorder="${h.id}">Reorder</button>
+        <button class="btn ghost" data-delete="${h.id}">Delete</button>
+      </div>
+    </article>`).join('');
+
+  list.querySelectorAll('[data-reorder]').forEach(b=>b.addEventListener('click',()=>{
+    const id=+b.dataset.reorder; const h=state.history.find(x=>x.id===id); if(!h) return;
+    h.items.forEach(it=>addToCart({ id:it.id, name:it.name, unitPrice:it.unit, qty:it.qty, meta:it.meta||null, type:it.type||'part' }));
+  }));
+  list.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>{
+    const id=+b.dataset.delete; state.history=state.history.filter(x=>x.id!==id); persistHistory(); renderHistory();
+  }));
+}
+document.getElementById('clearHistoryBtn').addEventListener('click',()=>{
+  if(confirm('Clear all history?')){ state.history=[]; persistHistory(); renderHistory(); }
+});
+
+/* =========================
+   INIT / ACTIONS
+========================= */
+function renderAll(){ renderCards(); renderCart(); renderCust(); renderTotals(); renderHistory(); }
+
+function checkout(){
+  if(!state.cart.length){ alert('Cart is empty'); return; }
+  const subtotal = state.cart.reduce((s,l)=>s+l.unitPrice*l.qty,0);
+  const pct = currentDiscountPct();
+  const disc = +(subtotal*pct/100).toFixed(2);
+  const total = +(subtotal-disc).toFixed(2);
+  const entry = {
+    id:Date.now(),
+    items: state.cart.map(l=>({id:l.id,name:l.name,qty:l.qty,unit:l.unitPrice,meta:l.meta||null,type:l.type||'part'})),
+    subtotal:+subtotal.toFixed(2), pct, custType:state.custType, total
+  };
+  state.history.unshift(entry); persistHistory();
+  state.cart=[]; persist();
+  renderAll();
+  alert('Saved to history.');
+}
+
+function resetAll(){ state.cart=[]; persist(); renderAll(); }
+
+document.getElementById('checkoutBtn').addEventListener('click',checkout);
+document.getElementById('resetBtn').addEventListener('click',resetAll);
+
+// theme
+const themeBtn=document.getElementById('themeBtn');
+function applyTheme(t){ document.documentElement.setAttribute('data-theme',t); localStorage.setItem('mc_theme',t); themeBtn.textContent = t==='light'?'🌙 Dark':'☀️ Light'; }
+applyTheme(localStorage.getItem('mc_theme')||'dark');
+themeBtn.addEventListener('click',()=>applyTheme((localStorage.getItem('mc_theme')||'dark')==='dark'?'light':'dark'));
+
+renderAll();
+</script>
+</body>
+</html>
