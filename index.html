@@ -29,9 +29,9 @@
     --radius:16px;
     --shadow:0 14px 34px rgba(0,0,0,.4);
 
-    /* Logo sizing like Pizza This (emoji is injected by ::after) */
-    --logo-size: 72px;          /* box size */
-    --logo-emoji-size: 52px;    /* emoji size */
+    /* Logo sizing (like Bean Machine) */
+    --logo-size: 56px;        /* box size */
+    --logo-emoji-size: 34px;  /* emoji size */
   }
   [data-theme="light"]{
     --bg:#f6f7ff; --panel:#ffffff; --card:#ffffff; --chip:#eef1ff;
@@ -55,17 +55,18 @@
   header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
   .brand{display:flex; align-items:center; gap:12px}
 
-  /* Pizza-This style emoji logo (emoji via ::after so it scales crisply) */
+  /* Bean-Machine-style logo box with ::after emoji */
   .logo{
     width:var(--logo-size);
     height:var(--logo-size);
-    border-radius:14px;
+    border-radius:12px;
     position:relative;
+    box-shadow:var(--shadow);
     background:conic-gradient(from 210deg, #141b33, #1b2a6b 30%, #8b5cf6 60%, #fb37b7 85%, #141b33 100%);
-    box-shadow:0 0 0 2px #232e7a, 0 0 36px #8b5cf655, 0 0 60px #fb37b744, var(--shadow);
+    outline:2px solid #232e7a;
   }
   .logo::after{
-    content:"🚗";                 /* change emoji here if you want */
+    content:"🚗";
     position:absolute; inset:0;
     display:grid; place-items:center;
     font-size:var(--logo-emoji-size);
@@ -136,7 +137,7 @@
   <div class="container">
     <header>
       <div class="brand">
-        <!-- Emoji comes from CSS ::after (like Pizza This) -->
+        <!-- Emoji comes from CSS ::after (like Bean Machine) -->
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Midnight Club Order Calculator</h1>
@@ -277,9 +278,9 @@ const MENU = {
     { id:'hood',            name:'🛡️ Hood',                 price:null, type:'part' },
     { id:'bodykits',        name:'🧱 Body Kits',            price:null, type:'part' },
     { id:'roof',            name:'🏁 Roof',                 price:null, type:'part' },
-    { id:'grill',           name:'🧩 Grill',                price:null, type:'part' },  /* Fenders -> Grill */
+    { id:'grill',           name:'🧩 Grill',                price:null, type:'part' },
     { id:'framekits',       name:'🧬 Frame Kits',           price:null, type:'part' },
-    { id:'plate',           name:'🔖 Plate',                price:null, type:'part' },  /* Plate (+Vanity) -> Plate */
+    { id:'plate',           name:'🔖 Plate',                price:null, type:'part' },
     { id:'liveries',        name:'🎨 Liveries',             price:null, type:'part' },
     { id:'front-bumper',    name:'🧩 Front Bumper',         price:null, type:'part' },
     { id:'rear-bumper',     name:'🧩 Rear Bumper',          price:null, type:'part' },
@@ -289,7 +290,7 @@ const MENU = {
     { id:'neon-color',      name:'💜 Neon Color',           price:null, type:'part' },
     { id:'primary-paint',   name:'🎨 Primary Respray',      price:null, type:'part' },
     { id:'secondary-paint', name:'🎨 Secondary Respray',    price:null, type:'part' },
-    { id:'pearlescent',     name:'🌌 Pearlescent',          price:null, type:'part' },  /* New */
+    { id:'pearlescent',     name:'🌌 Pearlescent',          price:null, type:'part' },
     { id:'systems',         name:'🧠 Systems',              price:null, type:'part' },
     { id:'windows',         name:'🧊 Windows',              price:null, type:'part' },
     { id:'wheel-color',     name:'🎡 Wheel Color',          price:null, type:'part' },
