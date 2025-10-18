@@ -3,88 +3,105 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Midnight Club Pricing Calculator</title>
+<title>Midnight Club — Order Calculator</title>
 <meta name="theme-color" content="#0b0f1c">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><rect width='128' height='128' rx='24' fill='%230b0f1c'/><path d='M24 96h80' stroke='%2322d3ee' stroke-width='10' stroke-linecap='round'/><path d='M24 32h80' stroke='%238b5cf6' stroke-width='10' stroke-linecap='round'/><text x='50%' y='62%' text-anchor='middle' font-size='54' font-family='monospace' fill='%23e6e9ff'>MC</text></svg>'>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'><rect rx='20' width='128' height='128' fill='%230b0f1c'/><path d='M20 32h88' stroke='%238b5cf6' stroke-width='10' stroke-linecap='round'/><path d='M20 96h88' stroke='%2322d3ee' stroke-width='10' stroke-linecap='round'/><text x='50%' y='62%' text-anchor='middle' font-size='54' font-family='monospace' fill='%23e7ecff'>MC</text></svg>">
+
 <style>
+  /* ============ THEME ============ */
   :root{
-    /* synthwave (dark default) */
     --bg:#0b0f1c;
     --panel:#0f1527;
     --card:#121a33;
-    --chip:#101732;
+    --chip:#11193b;
     --ink:#e7ecff;
-    --muted:#9aa3d1;
+    --muted:#a6b1de;
     --border:#1b2750;
-    --border-2:#233069;
-    --accent:#8b5cf6;       /* purple */
-    --accent-2:#22d3ee;     /* neon cyan */
+    --border-2:#2a3a77;
+    --accent:#8b5cf6;   /* purple */
+    --glow:#22d3ee;     /* neon cyan */
     --radius:16px;
     --shadow:0 12px 28px rgba(0,0,0,.35);
   }
   [data-theme="light"]{
-    --bg:#f5f7ff; --panel:#ffffff; --card:#ffffff; --chip:#f1f5ff;
-    --ink:#0b0f1c; --muted:#54619b; --border:#d9e0ff; --border-2:#c8d2ff;
+    --bg:#f5f7ff; --panel:#ffffff; --card:#ffffff; --chip:#eef2ff;
+    --ink:#0b0f1c; --muted:#52619b; --border:#d7defc; --border-2:#c5cff9;
     --shadow:0 10px 18px rgba(20,30,70,.08);
   }
 
+  /* ============ BASE ============ */
   *{box-sizing:border-box}
-  html,body{margin:0;background:
-    radial-gradient(900px 360px at 50% -140px, rgba(34,211,238,.09), transparent 55%),
-    radial-gradient(700px 240px at 100% 10%, rgba(139,92,246,.09), transparent 60%),
-    var(--bg);
-    color:var(--ink); font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
-  h1,h2,h3{margin:0;letter-spacing:.2px}
-  .container{max-width:1200px;margin:28px auto;padding:0 16px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;
-        background:linear-gradient(135deg,#2336a8,#8b5cf6);
-        box-shadow:0 0 0 2px #2232a0, 0 0 36px #8b5cf666, var(--shadow);
-        color:#fff;font-weight:900}
-  .toolrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .chip{padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);color:var(--muted);font-weight:700;font-size:.85rem}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--chip);color:inherit;cursor:pointer;font-weight:700}
-  .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff;border:none;box-shadow:0 0 24px #8b5cf655}
+  html,body{
+    margin:0;
+    background:
+      radial-gradient(900px 340px at 50% -140px, rgba(34,211,238,.1), transparent 55%),
+      radial-gradient(700px 220px at 100% 10%, rgba(139,92,246,.10), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;
+  }
+  h1,h2,h3{margin:0; letter-spacing:.2px}
+  .container{max-width:1200px; margin:28px auto; padding:0 16px}
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
+  .brand{display:flex; align-items:center; gap:12px}
+  .logo{
+    width:48px; height:48px; border-radius:12px; display:grid; place-items:center;
+    background:linear-gradient(135deg,#2130a6,#8b5cf6);
+    box-shadow:0 0 0 2px #2232a0, 0 0 36px #8b5cf666, var(--shadow);
+    color:#fff; font-weight:900;
+  }
+  .toolrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .chip{padding:6px 10px; border-radius:999px; background:var(--chip); border:1px solid var(--border); color:var(--muted); font-weight:700; font-size:.85rem}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--chip); color:inherit; cursor:pointer; font-weight:700}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5); color:#fff; border:none; box-shadow:0 0 24px #8b5cf655}
   .btn.ghost{background:transparent}
 
-  .flagbar{height:10px;border-radius:8px;overflow:hidden;margin-bottom:18px}
-  .flagbar > div{display:flex;height:100%}
-  .flagbar .a{flex:1;background:#11152a}
-  .flagbar .b{flex:1;background:#8b5cf6}
-  .flagbar .c{flex:1;background:#22d3ee}
+  .flagbar{height:10px; border-radius:8px; overflow:hidden; margin-bottom:18px}
+  .flagbar > div{display:flex; height:100%}
+  .flagbar .a{flex:1; background:#10152b}
+  .flagbar .b{flex:1; background:#8b5cf6}
+  .flagbar .c{flex:1; background:#22d3ee}
 
-  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+  .grid{display:grid; grid-template-columns:1.2fr .8fr; gap:20px}
   @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);position:relative}
-  .panel::after{content:"";position:absolute;inset:0;border-radius:calc(var(--radius) - 1px);box-shadow:inset 0 0 0 1px var(--border-2);pointer-events:none}
-  .panel h2{padding:16px 18px;border-bottom:1px solid var(--border);font-size:1rem;background:linear-gradient(90deg,transparent,#8b5cf622,transparent)}
+  .panel{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); position:relative}
+  .panel::after{content:""; position:absolute; inset:0; border-radius:calc(var(--radius) - 1px); box-shadow:inset 0 0 0 1px var(--border-2); pointer-events:none}
+  .panel h2{padding:16px 18px; border-bottom:1px solid var(--border); font-size:1rem; background:linear-gradient(90deg,transparent,#8b5cf622,transparent)}
   .content{padding:16px}
+  .divider{height:1px; background:var(--border); margin:10px 0}
 
   .section{margin-bottom:16px}
-  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .section h3{margin:0 0 8px}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px}
   .card h3{font-size:1rem}
-  .price{color:var(--accent-2);font-weight:900}
-  .muted{color:var(--muted);font-size:.9rem}
-  .qty{display:grid;grid-template-columns:32px 1fr 32px;align-items:center;gap:8px;margin-top:6px}
-  .qty button{height:36px;border-radius:10px;border:1px solid var(--border);background:var(--chip);color:inherit;cursor:pointer;font-size:18px}
+  .price{color:var(--glow); font-weight:900}
+  .muted{color:var(--muted); font-size:.9rem}
+  .qty{display:grid; grid-template-columns:32px 1fr 32px; align-items:center; gap:8px; margin-top:6px}
+  .qty button{height:36px; border-radius:10px; border:1px solid var(--border); background:var(--chip); color:inherit; cursor:pointer; font-size:18px}
   .qty output{text-align:center}
 
-  .order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:6px}
-  .cart-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px;border-bottom:1px dashed var(--border)}
-  .cart-item:last-child{border-bottom:none}
-
-  .tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .tabs{display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap}
   .tabs .btn[aria-selected="true"]{outline:2px solid var(--accent)}
 
-  .summary{display:flex;flex-direction:column;gap:12px}
-  .summary .row{display:flex;justify-content:space-between;align-items:center}
-  .summary .row.total{font-size:1.2rem;font-weight:900}
-  .discount{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .order-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:6px}
+  .cart-item{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; padding:8px; border-bottom:1px dashed var(--border)}
+  .cart-item:last-child{border-bottom:none}
+
+  .summary{display:flex; flex-direction:column; gap:12px}
+  .summary .row{display:flex; justify-content:space-between; align-items:center}
+  .summary .row.total{font-size:1.2rem; font-weight:900}
+
+  .discount{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center}
   .discount input[type="range"]{width:100%}
-  .kbd{font:700 .9rem ui-monospace,Menlo,Consolas;background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:8px;padding:4px 8px}
+  .kbd{font:700 .9rem ui-monospace,Menlo,Consolas; background:transparent; border:2px solid var(--accent); color:var(--accent); border-radius:8px; padding:4px 8px}
+
+  /* inputs in modal */
+  input[type="number"]{background:var(--card); color:inherit; border:1px solid var(--border); border-radius:10px; padding:8px 10px}
+  dialog{width:min(520px,92vw); background:var(--panel); color:inherit; border:1px solid var(--border); border-radius:18px; padding:0; box-shadow:0 30px 50px rgba(0,0,0,.55)}
+  dialog::backdrop{background:rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -99,7 +116,7 @@
       </div>
       <div class="toolrow">
         <span class="chip">Autosaves</span>
-        <button class="btn ghost" id="themeBtn">☀️ Light</button>
+        <button class="btn ghost" id="themeBtn" aria-pressed="true">☀️ Light</button>
         <button class="btn ghost" id="resetBtn">Clear All</button>
         <button class="btn primary" id="checkoutBtn">Checkout</button>
       </div>
@@ -115,35 +132,38 @@
         <h2>Menu</h2>
         <div class="content">
           <div class="section">
-            <h3 style="margin:0 0 8px">Parts & Body</h3>
+            <h3>Parts & Body</h3>
             <div class="cards" id="parts"></div>
           </div>
 
           <div class="section">
-            <h3 style="margin:0 0 8px">Cosmetic Upgrades</h3>
+            <h3>Cosmetic Upgrades</h3>
             <div class="cards" id="cosmetics"></div>
           </div>
 
           <div class="section">
-            <h3 style="margin:0 0 8px">Performance: Brakes</h3>
+            <h3>Performance — Brakes</h3>
             <div class="cards" id="perf-brakes"></div>
           </div>
           <div class="section">
-            <h3 style="margin:0 0 8px">Performance: Transmission</h3>
-            <div class="cards" id="perf-trans"></div>
-          </div>
-          <div class="section">
-            <h3 style="margin:0 0 8px">Performance: Suspension</h3>
+            <h3>Performance — Suspension</h3>
             <div class="cards" id="perf-susp"></div>
           </div>
           <div class="section">
-            <h3 style="margin:0 0 8px">Performance: Armor</h3>
+            <h3>Performance — Transmission</h3>
+            <div class="cards" id="perf-trans"></div>
+          </div>
+          <div class="section">
+            <h3>Performance — Armor</h3>
             <div class="cards" id="perf-armor"></div>
           </div>
           <div class="section">
-            <h3 style="margin:0 0 8px">Performance: Turbo & Engine</h3>
+            <h3>Performance — Turbo</h3>
             <div class="cards" id="perf-turbo"></div>
-            <div class="cards" id="perf-engine" style="margin-top:8px"></div>
+          </div>
+          <div class="section">
+            <h3>Performance — Engine</h3>
+            <div class="cards" id="perf-engine"></div>
           </div>
         </div>
       </section>
@@ -163,7 +183,7 @@
               <div class="cart-item muted">Your order is empty. Add items from the left.</div>
             </div>
 
-            <div class="divider" style="height:1px;background:var(--border);margin:10px 0"></div>
+            <div class="divider"></div>
 
             <div class="discount">
               <label for="discountRange"><strong>Discount</strong></label>
@@ -202,8 +222,8 @@
       <button class="btn" id="pmClose">✕</button>
     </div>
     <div style="padding:14px;display:grid;gap:10px">
-      <label>Unit Price ($)</label>
-      <input id="pmInput" type="number" min="0" step="25" value="0" style="background:var(--card);color:inherit;border:1px solid var(--border);border-radius:10px;padding:8px 10px"/>
+      <label for="pmInput">Unit Price ($)</label>
+      <input id="pmInput" type="number" min="0" step="25" value="0"/>
       <div class="toolrow" style="justify-content:flex-end">
         <button class="btn" id="pmCancel">Cancel</button>
         <button class="btn primary" id="pmAdd">Add</button>
@@ -212,10 +232,10 @@
   </dialog>
 
 <script>
-/* ========= DATA (from your midnight sheets) ========= */
+/* ========= DATA ========= */
 const MENU = {
   parts: [
-    // null price -> ask employee
+    // null price => employee enters per car
     { id:'spoiler', name:'Spoiler', price:null, type:'part' },
     { id:'skirts', name:'Skirts', price:null, type:'part' },
     { id:'exhausts', name:'Exhausts', price:null, type:'part' },
@@ -252,139 +272,170 @@ const MENU = {
     { id:'steering', name:'Steering Wheel', price:null, type:'cos' },
     { id:'engine-block', name:'Engine Block', price:null, type:'cos' },
     { id:'cam-cover', name:'Cam Cover', price:null, type:'cos' },
-    { id:'strut-brace', name:'Strut Brace', price:null, type:'cos' },
-    { id:'extra-1', name:'Extra 1', price:null, type:'cos' },
-    { id:'extra-2', name:'Extra 2', price:null, type:'cos' }
+    { id:'strut-brace', name:'Strut Brace', price:null, type:'cos' }
   ],
   performance: {
     brakes: [
-      { id:'brk-street', name:'Brakes: Street',    price:1900 },
-      { id:'brk-sport',  name:'Brakes: Sport',     price:2850 },
-      { id:'brk-race',   name:'Brakes: Race',      price:3800 }
-    ],
-    transmission: [
-      { id:'trn-street', name:'Transmission: Street', price:950 },
-      { id:'trn-sport',  name:'Transmission: Sport',  price:1188 },
-      { id:'trn-race',   name:'Transmission: Race',   price:1425 }
+      { id:'brk-street', name:'Brakes — Street',    price:1900, type:'perf' },
+      { id:'brk-sport',  name:'Brakes — Sport',     price:2850, type:'perf' },
+      { id:'brk-race',   name:'Brakes — Race',      price:3800, type:'perf' }
     ],
     suspension: [
-      { id:'sus-lowered', name:'Suspension: Lowered',     price:950 },
-      { id:'sus-street',  name:'Suspension: Street',      price:1900 },
-      { id:'sus-sport',   name:'Suspension: Sport',       price:2375 },
-      { id:'sus-comp',    name:'Suspension: Competition', price:3800 }
+      { id:'sus-lowered', name:'Suspension — Lowered',     price:950,  type:'perf' },
+      { id:'sus-street',  name:'Suspension — Street',      price:1900, type:'perf' },
+      { id:'sus-sport',   name:'Suspension — Sport',       price:2375, type:'perf' },
+      { id:'sus-comp',    name:'Suspension — Competition', price:3800, type:'perf' }
+    ],
+    transmission: [
+      { id:'trn-street', name:'Transmission — Street', price:950,  type:'perf' },
+      { id:'trn-sport',  name:'Transmission — Sport',  price:1188, type:'perf' },
+      { id:'trn-race',   name:'Transmission — Race',   price:1425, type:'perf' }
     ],
     armor: [
-      { id:'arm-20',  name:'Armor 20%',  price:950 },
-      { id:'arm-40',  name:'Armor 40%',  price:2850 },
-      { id:'arm-60',  name:'Armor 60%',  price:3800 },
-      { id:'arm-80',  name:'Armor 80%',  price:4750 },
-      { id:'arm-100', name:'Armor 100%', price:7125 }
+      { id:'arm-20',  name:'Armor — 20%',  price:950,  type:'perf' },
+      { id:'arm-40',  name:'Armor — 40%',  price:2850, type:'perf' },
+      { id:'arm-60',  name:'Armor — 60%',  price:3800, type:'perf' },
+      { id:'arm-80',  name:'Armor — 80%',  price:4750, type:'perf' },
+      { id:'arm-100', name:'Armor — 100%', price:7125, type:'perf' }
     ],
-    turbo: [ { id:'turbo', name:'Turbo Tuning', price:5700 } ],
+    turbo: [
+      { id:'turbo', name:'Turbo Tuning', price:5700, type:'perf' }
+    ],
     engine: [
-      { id:'ems-l2', name:'Engine (EMS L2)', price:2375 },
-      { id:'ems-l3', name:'Engine (EMS L3)', price:3325 },
-      { id:'ems-l4', name:'Engine (EMS L4)', price:4750 },
-      { id:'ems-l5', name:'Engine (EMS L5)', price:7600 }
+      { id:'ems-l2', name:'Engine (EMS L2)', price:2375, type:'perf' },
+      { id:'ems-l3', name:'Engine (EMS L3)', price:3325, type:'perf' },
+      { id:'ems-l4', name:'Engine (EMS L4)', price:4750, type:'perf' },
+      { id:'ems-l5', name:'Engine (EMS L5)', price:7600, type:'perf' }
     ]
   }
 };
 
-/* ========= UTIL & STATE ========= */
-const currency = n => '$'+Number(n).toFixed(2);
-const STATE_KEY='mc_calc_sw_v1', HIST_KEY='mc_hist_sw_v1';
+/* ========= UTIL/STATE ========= */
+const currency = n => '$' + Number(n).toFixed(2);
+const STATE_KEY='mc_state_sw_v3';
+const HIST_KEY ='mc_hist_sw_v3';
 const state = { cart:[], discountPct:0, history:[] };
+
 try{
-  const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
-  const hist =JSON.parse(localStorage.getItem(HIST_KEY)||'[]');
-  if(Array.isArray(saved.cart)) state.cart=saved.cart;
-  if(typeof saved.discountPct==='number') state.discountPct=saved.discountPct;
-  if(Array.isArray(hist)) state.history=hist;
-}catch{}
-const persist=()=>localStorage.setItem(STATE_KEY,JSON.stringify(state));
-const persistHistory=()=>localStorage.setItem(HIST_KEY,JSON.stringify(state.history));
+  const s = JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
+  const h = JSON.parse(localStorage.getItem(HIST_KEY)||'[]');
+  if (Array.isArray(s.cart)) state.cart = s.cart;
+  if (typeof s.discountPct === 'number') state.discountPct = s.discountPct;
+  if (Array.isArray(h)) state.history = h;
+}catch(e){ /* ignore */ }
+
+const persist = () => localStorage.setItem(STATE_KEY, JSON.stringify(state));
+const persistHistory = () => localStorage.setItem(HIST_KEY, JSON.stringify(state.history));
 
 /* ========= CARDS ========= */
-function cardHTML(item){
-  const show = (item.price==null) ? '<span class="muted">enter price</span>' : `<span class="price">${currency(item.price)}</span>`;
-  return `
-  <article class="card">
-    <h3>${item.name}</h3>
-    <div class="toolrow" style="justify-content:space-between">
-      ${show}
-      <div class="qty">
-        <button aria-label="decrease">−</button>
-        <output>1</output>
-        <button aria-label="increase">+</button>
-      </div>
-    </div>
-    <button class="btn" ${item.price==null?`data-custom="${item.id}"`:`data-add="${item.id}"`}>Add</button>
-  </article>`;
+function allItems(){
+  return [
+    ...MENU.parts,
+    ...MENU.cosmetics,
+    ...MENU.performance.brakes,
+    ...MENU.performance.suspension,
+    ...MENU.performance.transmission,
+    ...MENU.performance.armor,
+    ...MENU.performance.turbo,
+    ...MENU.performance.engine
+  ];
 }
+function findById(id){ return allItems().find(i => i.id === id); }
+
+function cardHTML(item){
+  const priceHtml = (item.price == null)
+    ? '<span class="muted">enter price</span>'
+    : `<span class="price">${currency(item.price)}</span>`;
+  const actionAttr = (item.price == null) ? `data-custom="${item.id}"` : `data-add="${item.id}"`;
+  return `
+    <article class="card">
+      <h3>${item.name}</h3>
+      <div class="toolrow" style="justify-content:space-between">
+        ${priceHtml}
+        <div class="qty">
+          <button aria-label="decrease">−</button>
+          <output>1</output>
+          <button aria-label="increase">+</button>
+        </div>
+      </div>
+      <button class="btn" ${actionAttr}>Add</button>
+    </article>`;
+}
+
 function renderSection(arr, mountId){
-  const el=document.getElementById(mountId);
-  el.innerHTML = arr.map(cardHTML).join('');
-  el.querySelectorAll('.card').forEach(card=>{
-    let count=1; const out=card.querySelector('output');
-    card.querySelector('[aria-label="decrease"]').addEventListener('click',()=>{count=Math.max(1,count-1);out.value=count;});
-    card.querySelector('[aria-label="increase"]').addEventListener('click',()=>{count++;out.value=count;});
-    const addId = card.querySelector('[data-add]')?.getAttribute('data-add');
-    const cusId = card.querySelector('[data-custom]')?.getAttribute('data-custom');
-    if(addId){
-      const it=findById(addId);
-      card.querySelector('[data-add]').addEventListener('click',()=>addToCart({id:it.id,name:it.name,unitPrice:it.price,qty:count,type:it.type}));
+  const mount = document.getElementById(mountId);
+  mount.innerHTML = arr.map(cardHTML).join('');
+  mount.querySelectorAll('.card').forEach(card => {
+    let count = 1;
+    const out = card.querySelector('output');
+    const dec = card.querySelector('button[aria-label="decrease"]');
+    const inc = card.querySelector('button[aria-label="increase"]');
+    dec.addEventListener('click', () => { count = Math.max(1, count-1); out.value = count; });
+    inc.addEventListener('click', () => { count++; out.value = count; });
+
+    const addBtn = card.querySelector('[data-add]');
+    const cusBtn = card.querySelector('[data-custom]');
+    if (addBtn){
+      const id = addBtn.getAttribute('data-add');
+      const item = findById(id);
+      addBtn.addEventListener('click', () => {
+        addToCart({ id:item.id, name:item.name, unitPrice:item.price, qty:count, type:item.type||'part' });
+      });
     }
-    if(cusId){
-      const it=findById(cusId);
-      card.querySelector('[data-custom]').addEventListener('click',()=>promptCustomPrice(it,count));
+    if (cusBtn){
+      const id = cusBtn.getAttribute('data-custom');
+      const item = findById(id);
+      cusBtn.addEventListener('click', () => promptCustomPrice(item, count));
     }
   });
 }
+
 function renderCards(){
-  renderSection(MENU.parts,'parts');
-  renderSection(MENU.cosmetics,'cosmetics');
-  renderSection(MENU.performance.brakes,'perf-brakes');
-  renderSection(MENU.performance.transmission,'perf-trans');
-  renderSection(MENU.performance.suspension,'perf-susp');
-  renderSection(MENU.performance.armor,'perf-armor');
-  renderSection(MENU.performance.turbo,'perf-turbo');
-  renderSection(MENU.performance.engine,'perf-engine');
-}
-function findById(id){
-  return [
-    ...MENU.parts, ...MENU.cosmetics,
-    ...MENU.performance.brakes, ...MENU.performance.transmission,
-    ...MENU.performance.suspension, ...MENU.performance.armor,
-    ...MENU.performance.turbo, ...MENU.performance.engine
-  ].find(i=>i.id===id);
+  renderSection(MENU.parts, 'parts');
+  renderSection(MENU.cosmetics, 'cosmetics');
+  renderSection(MENU.performance.brakes, 'perf-brakes');
+  renderSection(MENU.performance.suspension, 'perf-susp');
+  renderSection(MENU.performance.transmission, 'perf-trans');
+  renderSection(MENU.performance.armor, 'perf-armor');
+  renderSection(MENU.performance.turbo, 'perf-turbo');
+  renderSection(MENU.performance.engine, 'perf-engine');
 }
 
-/* ========= PRICE PROMPT ========= */
-const pm=document.getElementById('priceModal');
-const pmTitle=document.getElementById('pmTitle');
-const pmInput=document.getElementById('pmInput');
-document.getElementById('pmClose').onclick=()=>pm.close();
-document.getElementById('pmCancel').onclick=()=>pm.close();
-let pmCtx=null;
-document.getElementById('pmAdd').onclick=()=>{
-  if(!pmCtx) return;
-  const v=Number(pmInput.value||0);
-  addToCart({ id:pmCtx.id, name:pmCtx.name, unitPrice:v, qty:pmCtx.qty||1, type:pmCtx.type, meta:'custom price' });
+/* ========= PRICE MODAL ========= */
+const pm = document.getElementById('priceModal');
+const pmTitle = document.getElementById('pmTitle');
+const pmInput = document.getElementById('pmInput');
+document.getElementById('pmClose').addEventListener('click', () => pm.close());
+document.getElementById('pmCancel').addEventListener('click', () => pm.close());
+let pmCtx = null;
+document.getElementById('pmAdd').addEventListener('click', () => {
+  if (!pmCtx) return;
+  const v = Number(pmInput.value || 0);
+  addToCart({ id:pmCtx.id, name:pmCtx.name, unitPrice:v, qty:pmCtx.qty||1, type:pmCtx.type||'part', meta:'custom price' });
   pm.close();
-};
-function promptCustomPrice(item, qty){ pmCtx={...item,qty}; pmTitle.textContent=`Enter price — ${item.name}`; pmInput.value=''; pm.showModal(); }
+});
+function promptCustomPrice(item, qty){
+  pmCtx = { ...item, qty };
+  pmTitle.textContent = `Enter price — ${item.name}`;
+  pmInput.value = '';
+  pm.showModal();
+}
 
-/* ========= CART & TOTALS ========= */
+/* ========= CART / TOTALS ========= */
 function addToCart(line){
-  const key=`${line.id}|${line.unitPrice}|${line.meta||''}`;
-  const match=state.cart.find(l=>`${l.id}|${l.unitPrice}|${l.meta||''}`===key);
-  if(match) match.qty+=line.qty; else state.cart.push(line);
+  const key = `${line.id}|${line.unitPrice}|${line.meta||''}`;
+  const match = state.cart.find(l => `${l.id}|${l.unitPrice}|${l.meta||''}` === key);
+  if (match) match.qty += line.qty; else state.cart.push(line);
   persist(); renderCart(); renderTotals();
 }
+
 function renderCart(){
-  const cart=document.getElementById('cart');
-  if(!state.cart.length){ cart.innerHTML='<div class="cart-item muted">Your order is empty. Add items from the left.</div>'; return; }
-  cart.innerHTML = state.cart.map((l,i)=>`
+  const wrap = document.getElementById('cart');
+  if (!state.cart.length){
+    wrap.innerHTML = '<div class="cart-item muted">Your order is empty. Add items from the left.</div>';
+    return;
+  }
+  wrap.innerHTML = state.cart.map((l,i)=>`
     <div class="cart-item">
       <div>
         <div><strong>${l.name}</strong></div>
@@ -398,31 +449,41 @@ function renderCart(){
       <div><strong>${currency(l.unitPrice*l.qty)}</strong></div>
     </div>`).join('');
 
-  cart.querySelectorAll('[data-inc]').forEach(b=>b.addEventListener('click',()=>{ const i=+b.dataset.inc; state.cart[i].qty++; persist(); renderCart(); renderTotals(); }));
-  cart.querySelectorAll('[data-dec]').forEach(b=>b.addEventListener('click',()=>{ const i=+b.dataset.dec; state.cart[i].qty--; if(state.cart[i].qty<=0) state.cart.splice(i,1); persist(); renderCart(); renderTotals(); }));
+  wrap.querySelectorAll('[data-inc]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.getAttribute('data-inc'); state.cart[i].qty++; persist(); renderCart(); renderTotals();
+  }));
+  wrap.querySelectorAll('[data-dec]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.getAttribute('data-dec'); state.cart[i].qty--; if(state.cart[i].qty<=0) state.cart.splice(i,1);
+    persist(); renderCart(); renderTotals();
+  }));
 }
 
-const range=document.getElementById('discountRange'), label=document.getElementById('discountLabel');
-function renderDiscount(){ range.value=state.discountPct; label.textContent=`${state.discountPct}%`; }
-range.addEventListener('input',()=>{ state.discountPct=+range.value; persist(); renderTotals(); renderDiscount(); });
+const range = document.getElementById('discountRange');
+const label = document.getElementById('discountLabel');
+function renderDiscount(){ range.value = state.discountPct; label.textContent = `${state.discountPct}%`; }
+range.addEventListener('input', () => { state.discountPct = +range.value; persist(); renderTotals(); renderDiscount(); });
 
 function renderTotals(){
-  const subtotal = state.cart.reduce((s,l)=>s + l.unitPrice*l.qty, 0);
-  const manual   = +(subtotal * (state.discountPct/100)).toFixed(2);
-  const total    = subtotal - manual;
-  document.getElementById('subtotal').textContent=currency(subtotal);
-  document.getElementById('discount').textContent='-'+currency(manual);
-  document.getElementById('total').textContent=currency(total);
+  const subtotal = state.cart.reduce((s,l)=> s + l.unitPrice*l.qty, 0);
+  const manual = +(subtotal * (state.discountPct/100)).toFixed(2);
+  const total = subtotal - manual;
+  document.getElementById('subtotal').textContent = currency(subtotal);
+  document.getElementById('discount').textContent = '-' + currency(manual);
+  document.getElementById('total').textContent = currency(total);
 }
 
 /* ========= HISTORY ========= */
 function renderHistory(){
-  const list=document.getElementById('historyList');
-  if(!state.history.length){ list.innerHTML='<div class="muted">No past orders yet.</div>'; return; }
+  const list = document.getElementById('historyList');
+  if (!state.history.length){
+    list.innerHTML = '<div class="muted">No past orders yet.</div>';
+    return;
+  }
   list.innerHTML = state.history.map(h=>`
     <article class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-        <div><strong>${new Date(h.id).toLocaleString()}</strong>
+        <div>
+          <strong>${new Date(h.id).toLocaleString()}</strong>
           <div class="muted">${h.items.length} lines • ${h.pct}% off</div>
         </div>
         <div><strong>${currency(h.total)}</strong></div>
@@ -439,51 +500,64 @@ function renderHistory(){
       </div>
     </article>`).join('');
 
-  list.querySelectorAll('[data-reorder]').forEach(b=>b.addEventListener('click',()=>{
-    const id=+b.dataset.reorder; const h=state.history.find(x=>x.id===id); if(!h) return;
-    h.items.forEach(it=>addToCart({ id:it.id,name:it.name,unitPrice:it.unit,qty:it.qty,meta:it.meta||null,type:it.type||'part' }));
+  list.querySelectorAll('[data-reorder]').forEach(b => b.addEventListener('click', () => {
+    const id = +b.getAttribute('data-reorder');
+    const h = state.history.find(x => x.id === id); if (!h) return;
+    h.items.forEach(it => addToCart({ id:it.id, name:it.name, unitPrice:it.unit, qty:it.qty, meta:it.meta||null, type:it.type||'part' }));
   }));
-  list.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>{
-    const id=+b.dataset.delete; state.history=state.history.filter(x=>x.id!==id); persistHistory(); renderHistory();
+  list.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => {
+    const id = +b.getAttribute('data-delete');
+    state.history = state.history.filter(x => x.id !== id); persistHistory(); renderHistory();
   }));
 }
-document.getElementById('clearHistoryBtn').addEventListener('click',()=>{
-  if(confirm('Clear all history?')){ state.history=[]; persistHistory(); renderHistory(); }
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+  if (confirm('Clear all history?')){ state.history = []; persistHistory(); renderHistory(); }
 });
 
-/* ========= TABS / THEME / CHECKOUT ========= */
-const tabButtons=document.querySelectorAll('[data-tab]');
+/* ========= TABS / THEME / ACTIONS ========= */
+const tabButtons = document.querySelectorAll('[data-tab]');
 function selectTab(which){
-  document.getElementById('tab-summary').hidden = which!=='summary';
-  document.getElementById('tab-history').hidden = which!=='history';
-  tabButtons.forEach(b=>b.setAttribute('aria-selected', String(b.getAttribute('data-tab')===which)));
+  document.getElementById('tab-summary').hidden = (which !== 'summary');
+  document.getElementById('tab-history').hidden = (which !== 'history');
+  tabButtons.forEach(b => b.setAttribute('aria-selected', String(b.getAttribute('data-tab') === which)));
 }
-tabButtons.forEach(b=>b.addEventListener('click',()=>selectTab(b.getAttribute('data-tab'))));
+tabButtons.forEach(b => b.addEventListener('click', () => selectTab(b.getAttribute('data-tab'))));
 
 function checkout(){
-  if(!state.cart.length){ alert('Cart is empty'); return; }
-  const subtotal=state.cart.reduce((s,l)=>s+l.unitPrice*l.qty,0);
-  const pct=state.discountPct; const disc=+(subtotal*pct/100).toFixed(2);
-  const total=+(subtotal-disc).toFixed(2);
-  const entry={ id:Date.now(),
-    items:state.cart.map(l=>({id:l.id,name:l.name,qty:l.qty,unit:l.unitPrice,meta:l.meta||null,type:l.type||'part'})),
-    pct, subtotal:+subtotal.toFixed(2), total };
+  if (!state.cart.length){ alert('Cart is empty'); return; }
+  const subtotal = state.cart.reduce((s,l)=> s + l.unitPrice*l.qty, 0);
+  const pct = state.discountPct;
+  const disc = +(subtotal * (pct/100)).toFixed(2);
+  const total = +(subtotal - disc).toFixed(2);
+  const entry = {
+    id: Date.now(),
+    items: state.cart.map(l => ({ id:l.id, name:l.name, qty:l.qty, unit:l.unitPrice, meta:l.meta||null, type:l.type||'part' })),
+    pct, subtotal:+subtotal.toFixed(2), total
+  };
   state.history.unshift(entry); persistHistory();
-  state.cart=[]; state.discountPct=0; persist(); renderAll(); selectTab('summary');
+  state.cart = []; state.discountPct = 0; persist();
+  renderAll(); selectTab('summary');
+  alert('Saved to history.');
 }
 function resetAll(){ state.cart=[]; state.discountPct=0; persist(); renderAll(); }
 
-document.getElementById('checkoutBtn').addEventListener('click',checkout);
-document.getElementById('checkoutBtn2').addEventListener('click',checkout);
-document.getElementById('resetBtn').addEventListener('click',resetAll);
-document.getElementById('resetBtn2').addEventListener('click',resetAll);
+document.getElementById('checkoutBtn').addEventListener('click', checkout);
+document.getElementById('checkoutBtn2').addEventListener('click', checkout);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('resetBtn2').addEventListener('click', resetAll);
 
-// theme toggle (dark default)
-const themeBtn=document.getElementById('themeBtn');
-function applyTheme(t){ document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('mc_theme',t); themeBtn.textContent = t==='light'?'🌙 Dark':'☀️ Light'; }
-applyTheme(localStorage.getItem('mc_theme')||'dark');
-themeBtn.addEventListener('click',()=>applyTheme((localStorage.getItem('mc_theme')||'dark')==='dark'?'light':'dark'));
+const themeBtn = document.getElementById('themeBtn');
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('mc_theme', t);
+  themeBtn.textContent = (t === 'light') ? '🌙 Dark' : '☀️ Light';
+  themeBtn.setAttribute('aria-pressed', String(t !== 'light'));
+}
+applyTheme(localStorage.getItem('mc_theme') || 'dark');
+themeBtn.addEventListener('click', () => {
+  const next = (localStorage.getItem('mc_theme') || 'dark') === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+});
 
 /* ========= INIT ========= */
 function renderAll(){ renderCards(); renderCart(); renderTotals(); renderDiscount(); renderHistory(); }
