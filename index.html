@@ -480,7 +480,7 @@ range.addEventListener('input',()=>{ state.discountPct=+range.value; persist(); 
 function renderTotals(){
   const subtotal = state.cart.reduce((s,l)=> s + l.unitPrice*l.qty, 0);
   const manual   = +(subtotal * (state.discountPct/100)).toFixed(2);
-  const total    = subtotal - manual;
+  const total = (subtotal - manual) * 1.20;
   document.getElementById('subtotal').textContent=currency(subtotal);
   document.getElementById('discount').textContent='-'+currency(manual);
   document.getElementById('total').textContent=currency(total);
@@ -533,7 +533,7 @@ function checkout(){
   if(!state.cart.length){ alert('Cart is empty'); return; }
   const subtotal=state.cart.reduce((s,l)=>s+l.unitPrice*l.qty,0);
   const pct=state.discountPct; const disc=+(subtotal*pct/100).toFixed(2);
-  const total=+(subtotal-disc).toFixed(2);
+  const total =+((subtotal - disc) * 1.20).toFixed(2);
   const entry={ id:Date.now(),
     items:state.cart.map(l=>({ id:l.id,name:l.name,qty:l.qty,unit:l.unitPrice,meta:l.meta||null,type:l.type||'part' })),
     pct, subtotal:+subtotal.toFixed(2), total };
